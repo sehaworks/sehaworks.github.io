@@ -1,0 +1,475 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+:root {
+  /* color */
+  --bg: #fafafa;
+  --bg-light: #fefefe;
+  --bg-dark: #efefef;
+  --border: #dddddd;
+  --white: #ffffff;
+
+  --text-fst: #222222;
+  --text-sec: #555555;
+  --text-thd: #888888;
+  --text-th: #aaaaaa;
+
+  /* Font */
+  --font-base: 'Pretendard', sans-serif;
+
+  /* Font Size */
+  --font-size-xs: 0.75rem;
+  /* 12px */
+  --font-size-sm: 0.875rem;
+  /* 14px */
+  --font-size-base: 1rem;
+  /* 16px */
+  --font-size-md: 1.125rem;
+  /* 18px */
+  --font-size-lg: 1.25rem;
+  /* 20px */
+  --font-size-xl: 1.5rem;
+  /* 24px */
+  --font-size-2xl: 2rem;
+  /* 32px */
+  --font-size-3xl: 2.5rem;
+  /* 40px */
+  --font-size-4xl: 3rem;
+  /* 48px */
+
+  /* KIMSEHA */
+  --kimseha: clamp(240px, 70vw, 800px);
+
+  /* style */
+  --box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  --box-shadow-hover: 0 4px 48px rgba(0, 0, 0, 0.2);
+
+  --border-radius: 12px;
+  --border-radius-l: 30px;
+  --border-radius-xl: 999px;
+
+  --gap-xs: 4px;
+  --gap-sm: 8px;
+  --gap-md: 16px;
+  --gap-lg: 24px;
+  --gap-xl: 32px;
+  --gap-hg: 80px;
+
+  /* Layout */
+  --container-width: 1200px;
+  --container-padding: 32px;
+}
+
+html {
+  background-color: var(--bg);
+  color: var(--text-fst);
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-base);
+  font-size: var(--font-size-base);
+  line-height: 1.4;
+  min-height: 720px;
+}
+
+.container {
+  width: min(calc(100% - (var(--container-padding) * 2)),
+      var(--container-width));
+  margin-inline: auto;
+  min-height: 720px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* header */
+header {
+  padding-top: var(--gap-hg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+header>img {
+  width: var(--kimseha);
+}
+
+header>h6 {
+  color: var(--text-th);
+  font-size: var(--font-size-xl);
+  font-weight: 500;
+}
+
+/* body */
+.body {
+  display: flex;
+  gap: var(--gap-md);
+  justify-content: center;
+  align-items: center;
+}
+
+.project {
+  width: 300px;
+  min-width: 300px;
+  height: 300px;
+  background-color: var(--bg-light);
+  border-radius: var(--border-radius-l);
+  box-shadow: var(--box-shadow);
+  cursor: pointer;
+  transition: filter 0.2s ease-out, opacity 0.3s ease-out,
+    scale 0.2s ease-out;
+  transform: translateY(-20px);
+}
+
+.project>img {
+  width: 100%;
+  height: 100%;
+}
+
+/* body 안에서 어떤 project hover 중일 때 */
+.body:has(.project:hover) .project:not(:hover) {
+  filter: blur(5px);
+  opacity: 0.5;
+  z-index: 10;
+}
+
+/* 실제로 hover 중인 project는 원상복구 */
+.body .project:hover {
+  filter: blur(0px);
+  opacity: 1;
+  scale: calc(1.1);
+  box-shadow: var(--box-shadow-hover);
+}
+
+/* footer */
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 32px;
+}
+
+footer p {
+  color: var(--text-th);
+  font-size: var(--font-size-xs);
+}
+
+footer p b {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+button {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: var(--border-radius);
+  background-color: var(--bg-dark);
+  cursor: pointer;
+}
+
+button>img {
+  width: 24px;
+  filter: invert(12%) sepia(3%) saturate(13%) hue-rotate(321deg) brightness(105%) contrast(97%);
+}
+
+button:hover {
+  background-color: var(--text-fst);
+  transition: ease-in-out 0.1s;
+}
+
+button:hover>img {
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(117deg) brightness(106%) contrast(103%);
+  transition: ease-in-out 0.1s;
+}
+
+/* modal */
+.project-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg);
+  z-index: 9999;
+  overflow-y: auto;
+}
+
+.project-modal-container footer {
+  width: min(calc(100% - (var(--container-padding) * 2)),
+      var(--container-width));
+  margin-inline: auto;
+}
+
+.project-modal::-webkit-scrollbar {
+  display: none;
+}
+
+.project-modal.active {
+  display: block;
+}
+
+.modal-close {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  z-index: 999;
+}
+
+.project-modal-container {
+  padding-top: 172px;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-hg);
+  width: min(calc(100% - (var(--container-padding) * 2)),
+      var(--container-width));
+  margin-inline: auto;
+}
+
+.project-name {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.project-name h2 {
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+}
+
+.project-name p {
+  color: var(--text-sec);
+}
+
+.project-info {
+  display: flex;
+  gap: var(--gap-md);
+  margin-bottom: 100px;
+}
+
+.project-info .info-item {
+  flex: 1;
+  border-top: 1px solid var(--border);
+  padding-top: var(--gap-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+.project-info .info-item span {
+  font-weight: 300;
+  font-size: var(--font-size-sm);
+}
+
+.project-info .info-item strong {
+  font-weight: 500;
+}
+
+#modalDuties {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: disc;
+  font-size: var(--font-size-sm);
+}
+
+/* demo */
+/* 공통 레이아웃 */
+.project-demo-box {
+  background-size: 100% auto;
+  background-position: top center;
+  background-repeat: no-repeat;
+}
+
+.project-demo-box.bg-dashboard {
+  background-image: url("../src/bg1.png");
+}
+
+.project-demo-box.bg-kiosk {
+  background-image: url("../src/bg2.png");
+}
+
+.project-demo-box.bg-pos {
+  background-image: url("../src/bg3.png");
+}
+
+.project-demo {
+  display: none;
+  position: relative;
+  width: min(calc(100% - (var(--container-padding) * 2)), var(--container-width));
+  margin-inline: auto;
+  aspect-ratio: 1200 / 870;
+}
+
+.project-demo.active {
+  display: block;
+}
+
+.device-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------
+   iframe Wrapper (모니터 안의 초록색 구역 위치 잡아주는 박스)
+-------------------------------------------------- */
+.iframe-wrapper {
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+  left: 50%;
+  transform: translateX(-50%);
+  /* 영역 밖으로 나가는 iframe 감추기 */
+}
+
+/* iframe 실제 element (원본 큰 해상도로 고정) */
+.demo-iframe {
+  border: 0;
+  transform-origin: 0 0;
+  /* 좌상단 기준 축소 */
+}
+
+/* --------------------------------------------------
+   기기별 초록색 영역 위치/크기 (프로젝트 목업 SVG에 맞게 % 조절)
+-------------------------------------------------- */
+
+/* 대시보드 모니터) */
+.dashboard-screen {
+  top: 2%;
+  width: 93.1%;
+  height: 72.5%;
+}
+
+/* 키오스크 */
+.kiosk-screen {
+  top: 2%;
+  width: 29.4%;
+  height: 75.0%;
+}
+
+/* POS */
+.pos-screen {
+  top: 3.3%;
+  width: 66.8%;
+  height: 69.1%;
+}
+
+
+/* .project-demo-box {
+  background-size: 100% auto;
+  background-position: top center;
+  background-repeat: no-repeat;
+}
+
+.project-demo-box.bg-dashboard {
+  background-image: url("../src/bg1.png");
+}
+
+.project-demo-box.bg-kiosk {
+  background: url("../src/bg2.png");
+}
+
+.project-demo-box.bg-pos {
+  background: url("../src/bg3.png");
+}
+
+.project-demo {
+  display: none;
+  border: 0;
+  position: relative;
+  width: min(calc(100% - (var(--container-padding) * 2)),
+      var(--container-width));
+  margin-inline: auto;
+  aspect-ratio: 1200/770;
+
+}
+
+.project-demo.active {
+  display: block;
+}
+
+.project-demo {
+  padding-top: 100px;
+}
+
+.demo-iframe {
+  position: absolute;
+  z-index: 1;
+  border: 0;
+}
+
+.device-frame {
+  position: absolute;
+  width: 100%;
+  object-fit: contain;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.dashboard-screen {
+  width: 1120px;
+  height: 630px;
+  left: 50%;
+  transform: translate(-50%, 2.7%);
+  aspect-ratio: 1920 / 1080;
+}
+
+.kiosk-screen {
+  width: 352.69px;
+  height: 627px;
+  left: 50%;
+  transform: translate(-50%, 2.7%);
+  aspect-ratio: 1080 / 1920;
+}
+
+.pos-screen {
+  width: 800px;
+  height: 600px;
+  left: 50%;
+  transform: translate(-50%, 5%);
+  aspect-ratio: 1024 / 768;
+}
+
+
+.device-frame {
+  aspect-ratio: 1200 / 870;
+} */
+
+/* Mobile */
+@media (max-width: 785px) {
+  :root {
+    --container-padding: 16px;
+
+    --font-size-sm: 0.8125rem;
+    /* 13px */
+    --font-size-base: 0.9375rem;
+    /* 15px */
+    --font-size-md: 1rem;
+    /* 16px */
+    --font-size-lg: 1.125rem;
+    /* 18px */
+    --font-size-xl: 1.25rem;
+    /* 20px */
+
+    --font-size-2xl: 1.5rem;
+    /* 24px */
+    --font-size-3xl: 1.75rem;
+    /* 28px */
+    --font-size-4xl: 2rem;
+    /* 32px */
+    --font-size-5xl: 2.5rem;
+    /* 40px */
+  }
+}

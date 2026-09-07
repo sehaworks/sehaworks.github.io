@@ -5,12 +5,107 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KIM SEHA 2026 Portfolio</title>
+  <!-- CSS -->
+  <link rel="stylesheet" href="./css/reset.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <!-- JavaScript -->
+  <script src="./js/script.js" defer></script>
 </head>
 
 <body>
-  <div>
-    <iframe src="https://sehaworks.github.io/dashboard/" title="Dashboard" width="100%" height="800"
-      frameborder="0"></iframe>
+  <!-- main home -->
+  <div class="container">
+    <header>
+      <img src="./src/seha.svg" alt="KimSeha">
+      <h6>UI/UX Designer · Web Publisher</h6>
+    </header>
+    <section class="body">
+      <div class="project dashboard" data-project="dashboard"><img src="./src/dashboard-icon.png" alt="dashboard"></div>
+      <div class="project kiosk" data-project="kiosk"><img src="./src/kiosk-icon.png" alt="kiosk"></div>
+      <div class="project pos" data-project="pos"><img src="./src/pos-icon.png" alt="pos"></div>
+    </section>
+    <footer>
+      <div class="copyright">
+        <p><b>© 2026. KIM SEHA</b></p>
+        <p>All pictures cannot be copied without permission.</p>
+      </div>
+      <div class="contact-button-box">
+        <button class="user-info" type="button" onlink=""><img src="./src/user.svg" alt="info"></button>
+        <button class="user-mail" type="button" onlink="copyEmail()"><img src="./src/envelope.svg" alt="mail"></button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- project modal -->
+  <div class="project-modal" id="projectModal">
+    <button class="modal-close" id="modalClose" type="button"><img src="./src/x.svg" alt="x"></button>
+    <div class="project-modal-container">
+
+      <div class="modal-content">
+        <div class="project-name">
+          <h2 id="modalTitle"></h2>
+          <p id="modalDescription"></p>
+        </div>
+        <div class="project-info">
+          <div class="info-item">
+            <span class="info-title">담당 업무</span>
+            <strong id="modalRole"></strong>
+            <ul id="modalDuties"></ul>
+          </div>
+          <div class="info-item">
+            <span class="info-title">운영 환경</span>
+            <strong id="modalEnvironment"></strong>
+          </div>
+          <div class="info-item">
+            <span class="info-title">기술 스택</span>
+            <strong id="modalStack"></strong>
+          </div>
+          <div class="info-item">
+            <span class="info-title">사용 도구</span>
+            <strong id="modalTools"></strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-demo-box">
+        <!-- 1. Dashboard -->
+        <div class="project-demo dashboard-demo active">
+          <div class="iframe-wrapper dashboard-screen">
+            <iframe class="demo-iframe" src="https://sehaworks.github.io/dashboard/" title="Dashboard Demo"></iframe>
+          </div>
+          <img class="device-frame" src="./src/monitor.svg" alt="monitor">
+        </div>
+
+        <!-- 2. Kiosk -->
+        <div class="project-demo kiosk-demo">
+          <div class="iframe-wrapper kiosk-screen">
+            <iframe class="demo-iframe" src="https://sehaworks.github.io/dashboard/" title="Kiosk Demo"></iframe>
+          </div>
+          <img class="device-frame" src="./src/kiosk.svg" alt="kiosk">
+        </div>
+
+        <!-- 3. POS -->
+        <div class="project-demo pos-demo">
+          <div class="iframe-wrapper pos-screen">
+            <iframe class="demo-iframe" src="https://sehaworks.github.io/dashboard/" title="POS Demo"></iframe>
+          </div>
+          <img class="device-frame" src="./src/pos.svg" alt="pos">
+        </div>
+      </div>
+
+      <footer>
+        <div class="copyright">
+          <p><b>© 2026. KIM SEHA</b></p>
+          <p>All pictures cannot be copied without permission.</p>
+        </div>
+        <div class="contact-button-box">
+          <button class="user-info" type="button" onlink=""><img src="./src/user.svg" alt="info"></button>
+          <button class="user-mail" type="button" onlink="copyEmail()"><img src="./src/envelope.svg"
+              alt="mail"></button>
+        </div>
+      </footer>
+
+    </div>
   </div>
 </body>
 
