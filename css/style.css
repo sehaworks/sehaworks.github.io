@@ -328,6 +328,11 @@ button:hover img {
   color: var(--text-sec);
 }
 
+.project-notice {
+  color: var(--text-thd);
+  font-size: var(--font-size-sm);
+}
+
 .project-info {
   display: flex;
   gap: var(--gap-md);

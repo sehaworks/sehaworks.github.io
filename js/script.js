@@ -4,6 +4,7 @@ const projectData = {
   dashboard: {
     title: "스마트 사옥 통합 관리 시스템",
     description: "출입·방문·주차·근태·식수 등 사옥 운영 전반의 기능을 하나의 플랫폼에서 통합 관리하는 웹 기반 스마트 사옥 관리 시스템입니다. 전체 시스템의 웹 퍼블리싱을 담당했으며, 메인 대시보드를 중심으로 주요 화면의 UI를 구현하고 공통 레이아웃 및 UI 요소를 구성하여 이후 화면 개발에 활용할 수 있는 퍼블리싱 기반을 구축했습니다.",
+    notice: "※ 본 프로젝트는 보안상의 이유로 실제 서비스 정보 및 데이터를 공개하지 않습니다.\n이미지 및 Demo는 실제 프로젝트의 UI 구조와 퍼블리싱 작업을 기반으로 일부 내용을 재구성한 화면입니다.",
     role: "Web Publishing ······ 100%",
     duties: [
       "메인 대시보드 퍼블리싱",
@@ -86,6 +87,7 @@ const demoBox = document.querySelector(".project-demo-box");
 
 const modalTitle = document.querySelector("#modalTitle");
 const modalDescription = document.querySelector("#modalDescription");
+const modalNotice = document.querySelector("#modalNotice");
 const modalRole = document.querySelector("#modalRole");
 const modalDuties = document.querySelector("#modalDuties");
 const modalEnvironment = document.querySelector("#modalEnvironment");
@@ -95,16 +97,26 @@ const projectDemos = document.querySelectorAll(".project-demo");
 
 
 /* 프로젝트 클릭 */
+
 projects.forEach((project) => {
 
   project.addEventListener("click", () => {
 
     const projectName = project.dataset.project;
+
     const data = projectData[projectName];
 
     // 프로젝트 이름
     modalTitle.textContent = data.title;
     modalDescription.textContent = data.description;
+
+    // 프로젝트 안내문
+    if (data.notice) {
+      modalNotice.textContent = data.notice;
+      modalNotice.style.display = "block";
+    } else {
+      modalNotice.style.display = "none";
+    }
 
     // 담당 업무
     modalRole.textContent = data.role;
@@ -150,12 +162,10 @@ projects.forEach((project) => {
       projectDemo.classList.remove("active");
     });
 
-
     // 클릭한 프로젝트의 projectDemo 찾기
     const targetDemo = document.querySelector(
       `.${projectName}-demo`
     );
-
 
     // 해당 iframe만 보여주기
     targetDemo.classList.add("active");
@@ -163,14 +173,15 @@ projects.forEach((project) => {
     // --------------------
     // 모달 열기
     // --------------------
+
     modal.classList.add("active");
 
   });
 
 });
 
-
 /* X 버튼 */
+
 modalClose.addEventListener("click", () => {
   modal.classList.remove("active");
 });
