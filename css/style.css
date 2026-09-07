@@ -165,6 +165,11 @@ footer p b {
   font-weight: 700;
 }
 
+.contact-button-box {
+  display: flex;
+  gap: var(--gap-sm);
+}
+
 button {
   width: 44px;
   height: 44px;
@@ -172,9 +177,18 @@ button {
   border-radius: var(--border-radius);
   background-color: var(--bg-dark);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-button>img {
+a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button img {
   width: 24px;
   filter: invert(12%) sepia(3%) saturate(13%) hue-rotate(321deg) brightness(105%) contrast(97%);
 }
@@ -184,9 +198,74 @@ button:hover {
   transition: ease-in-out 0.1s;
 }
 
-button:hover>img {
+button:hover img {
   filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(117deg) brightness(106%) contrast(103%);
   transition: ease-in-out 0.1s;
+}
+
+/* 버튼과 말풍선의 위치 기준 */
+.email-btn-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* 말풍선 기본 스타일 */
+.toast-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  /* 기본 위치 (사라질 때 이 위치로 내려오면서 fade-out 됩니다) */
+  transform: translateX(-50%) translateY(4px);
+  margin-bottom: 8px;
+
+  padding: 6px 12px;
+  background-color: #333333;
+  color: #ffffff;
+  font-size: 13px;
+  border-radius: 6px;
+  white-space: nowrap;
+
+  /* 등장/퇴장 시 트랜지션 설정 (transform과 opacity 속성에 애니메이션 부여) */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.3s ease;
+  z-index: 10;
+}
+
+/* 말풍선 화살표 */
+.toast-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333333 transparent transparent transparent;
+  transition: border-color 0.3s ease;
+}
+
+/* 1. Hover 시 위로 스르륵 올라오며 표시 */
+.email-btn-wrapper:hover .toast-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* 2. 클릭 후 (복사 완료 상태): 조금 더 위로 뜨면서 나타남 */
+.toast-tooltip.copied {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateX(-50%) translateY(-8px) !important;
+  background-color: #10b981;
+  /* 포인트 컬러 */
+}
+
+.toast-tooltip.copied::after {
+  border-color: #10b981 transparent transparent transparent;
 }
 
 /* modal */
@@ -203,6 +282,7 @@ button:hover>img {
   width: min(calc(100% - (var(--container-padding) * 2)),
       var(--container-width));
   margin-inline: auto;
+  padding-top: var(--gap-xl);
 }
 
 .project-modal::-webkit-scrollbar {
@@ -251,7 +331,6 @@ button:hover>img {
 .project-info {
   display: flex;
   gap: var(--gap-md);
-  margin-bottom: 100px;
 }
 
 .project-info .info-item {
@@ -305,6 +384,7 @@ button:hover>img {
   width: min(calc(100% - (var(--container-padding) * 2)), var(--container-width));
   margin-inline: auto;
   aspect-ratio: 1200 / 870;
+  transform: translateY(80px);
 }
 
 .project-demo.active {

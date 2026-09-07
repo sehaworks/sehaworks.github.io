@@ -30,8 +30,15 @@
         <p>All pictures cannot be copied without permission.</p>
       </div>
       <div class="contact-button-box">
-        <button class="user-info" type="button" onlink=""><img src="./src/user.svg" alt="info"></button>
-        <button class="user-mail" type="button" onlink="copyEmail()"><img src="./src/envelope.svg" alt="mail"></button>
+        <button class="user-info" type="button"><a href="https://sehakim.notion.site/d66a9bc391a74955882cf5a59c22f849"
+            target="_blank"><img src="./src/user.svg" alt="info"></a></button>
+        <div class="email-btn-wrapper">
+          <button class="user-mail" type="button" onclick="copyEmail()">
+            <img src="./src/envelope.svg" alt="mail">
+          </button>
+          <!-- 말풍선 툴팁 -->
+          <div class="toast-tooltip" id="toastTooltip">메일 주소 복사하기</div>
+        </div>
       </div>
     </footer>
   </div>
@@ -99,9 +106,15 @@
           <p>All pictures cannot be copied without permission.</p>
         </div>
         <div class="contact-button-box">
-          <button class="user-info" type="button" onlink=""><img src="./src/user.svg" alt="info"></button>
-          <button class="user-mail" type="button" onlink="copyEmail()"><img src="./src/envelope.svg"
-              alt="mail"></button>
+          <button class="user-info" type="button"><a href="https://sehakim.notion.site/d66a9bc391a74955882cf5a59c22f849"
+              target="_blank"><img src="./src/user.svg" alt="info"></a></button>
+          <div class="email-btn-wrapper">
+            <button class="user-mail" type="button" onclick="copyEmail()">
+              <img src="./src/envelope.svg" alt="mail">
+            </button>
+            <!-- 말풍선 툴팁 -->
+            <div class="toast-tooltip" id="toastTooltip">메일 주소 복사하기!</div>
+          </div>
         </div>
       </footer>
 

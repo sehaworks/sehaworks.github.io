@@ -282,14 +282,32 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // 이메일 복사
-function copyEmail() {
-  const email = 'aseh0210@email.com';
+let toastTimer = null;
+let resetTextTimer = null;
 
-  navigator.clipboard.writeText(email)
-    .then(() => {
-      alert('이메일이 복사되었습니다!');
-    })
-    .catch((error) => {
-      console.error('이메일 복사 실패:', error);
-    });
+function copyEmail() {
+  const email = "aseh0210@gmail.com";
+  const tooltip = document.getElementById("toastTooltip");
+
+  navigator.clipboard.writeText(email).then(() => {
+    // 이전 동작 중인 타이머가 있다면 초기화 (연속 클릭 시 어긋남 방지)
+    if (toastTimer) clearTimeout(toastTimer);
+    if (resetTextTimer) clearTimeout(resetTextTimer);
+
+    // 1. "복사 완료!" 텍스트 변경 및 위로 떠오르는 .copied 클래스 추가
+    tooltip.innerText = "복사 완료!";
+    tooltip.classList.add("copied");
+
+    // 2. 1.5초 후 .copied 클래스를 제거하여 아래로 살짝 내려가며 사라지게 만듦
+    toastTimer = setTimeout(() => {
+      tooltip.classList.remove("copied");
+
+      // 3. 사라지는 애니메이션(CSS transition: 0.3s)이 완전히 끝난 후 텍스트 복원
+      resetTextTimer = setTimeout(() => {
+        tooltip.innerText = "메일 주소 복사하기";
+      }, 300);
+    }, 1500);
+  }).catch(err => {
+    console.error("복사 실패:", err);
+  });
 }
