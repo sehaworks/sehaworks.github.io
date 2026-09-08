@@ -34,7 +34,7 @@ const projectData = {
   pos: {
     title: "POS",
     description: "입장권 판매 및 이용객 관리를 위한 POS 화면을 설계하고 퍼블리싱했습니다.<br />현장 운영자의 업무 흐름을 고려해 주요 기능을 직관적으로 확인하고 빠르게 처리할 수 있도록 구성했습니다.",
-    role: ["UI/UX Design ······ 100%", "Web Publishing ······ 100%"],
+    role: "UI/UX Design ······ 100%<br />Web Publishing ······ 100%",
     duties: [],
     environment: "Pos",
     stack: ["HTML5", "CSS3", "JavaScript", "React", "Vite"],
@@ -97,9 +97,9 @@ projects.forEach((project) => {
 
     // 담당 업무 (배열 또는 문자열 대응)
     if (Array.isArray(data.role)) {
-      modalRole.textContent = data.role.join("<br />");
+      modalRole.innerHTML = data.role.join("<br>");
     } else {
-      modalRole.textContent = data.role;
+      modalRole.innerHTML = data.role;
     }
 
     // 담당 업무 상세 목록
