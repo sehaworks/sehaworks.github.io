@@ -37,7 +37,7 @@
   /* 48px */
 
   /* KIMSEHA */
-  --kimseha: clamp(240px, 70vw, 800px);
+  --kimseha: clamp(300px, 70vw, 800px);
 
   /* style */
   --box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
@@ -64,6 +64,10 @@ html {
   color: var(--text-fst);
 }
 
+html * {
+  box-sizing: border-box;
+}
+
 html::-webkit-scrollbar {
   display: none;
 }
@@ -73,13 +77,12 @@ body {
   font-family: var(--font-base);
   font-size: var(--font-size-base);
   line-height: 1.4;
+  min-width: 430px;
   min-height: 720px;
 }
 
 .container {
-  width: min(calc(100% - (var(--container-padding) * 2)),
-      var(--container-width));
-  margin-inline: auto;
+
   min-height: 720px;
   height: 100vh;
   display: flex;
@@ -124,7 +127,7 @@ header>h6 {
   cursor: pointer;
   transition: filter 0.2s ease-out, opacity 0.3s ease-out,
     scale 0.2s ease-out;
-  transform: translateY(-20px);
+  /* transform: translateY(-20px); */
 }
 
 .project>img {
@@ -152,7 +155,10 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 32px;
+  padding: var(--gap-xl);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 footer p {
@@ -278,10 +284,8 @@ button:hover img {
   overflow-y: auto;
 }
 
-.project-modal-container footer {
-  width: min(calc(100% - (var(--container-padding) * 2)),
-      var(--container-width));
-  margin-inline: auto;
+.project-modal-container>footer {
+
   padding-top: var(--gap-xl);
 }
 
@@ -302,15 +306,15 @@ button:hover img {
 
 .project-modal-container {
   padding-top: 172px;
+  padding: 172px 32px 0;
 }
 
 .modal-content {
   display: flex;
   flex-direction: column;
   gap: var(--gap-hg);
-  width: min(calc(100% - (var(--container-padding) * 2)),
-      var(--container-width));
-  margin-inline: auto;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .project-name {
@@ -452,88 +456,8 @@ button:hover img {
 }
 
 
-/* .project-demo-box {
-  background-size: 100% auto;
-  background-position: top center;
-  background-repeat: no-repeat;
-}
-
-.project-demo-box.bg-dashboard {
-  background-image: url("../src/bg1.png");
-}
-
-.project-demo-box.bg-kiosk {
-  background: url("../src/bg2.png");
-}
-
-.project-demo-box.bg-pos {
-  background: url("../src/bg3.png");
-}
-
-.project-demo {
-  display: none;
-  border: 0;
-  position: relative;
-  width: min(calc(100% - (var(--container-padding) * 2)),
-      var(--container-width));
-  margin-inline: auto;
-  aspect-ratio: 1200/770;
-
-}
-
-.project-demo.active {
-  display: block;
-}
-
-.project-demo {
-  padding-top: 100px;
-}
-
-.demo-iframe {
-  position: absolute;
-  z-index: 1;
-  border: 0;
-}
-
-.device-frame {
-  position: absolute;
-  width: 100%;
-  object-fit: contain;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.dashboard-screen {
-  width: 1120px;
-  height: 630px;
-  left: 50%;
-  transform: translate(-50%, 2.7%);
-  aspect-ratio: 1920 / 1080;
-}
-
-.kiosk-screen {
-  width: 352.69px;
-  height: 627px;
-  left: 50%;
-  transform: translate(-50%, 2.7%);
-  aspect-ratio: 1080 / 1920;
-}
-
-.pos-screen {
-  width: 800px;
-  height: 600px;
-  left: 50%;
-  transform: translate(-50%, 5%);
-  aspect-ratio: 1024 / 768;
-}
-
-
-.device-frame {
-  aspect-ratio: 1200 / 870;
-} */
-
 /* Mobile */
-@media (max-width: 785px) {
+@media (max-width: 1023px) {
   :root {
     --container-padding: 16px;
 
@@ -556,5 +480,112 @@ button:hover img {
     /* 32px */
     --font-size-5xl: 2.5rem;
     /* 40px */
+  }
+
+  html {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 10;
+    padding-bottom: var(--gap-xl);
+    background: rgba(250, 250, 250, 0.1);
+    background: linear-gradient(180deg, rgba(250, 250, 250, 1) 0%, rgba(250, 250, 250, 1) 70%, rgba(250, 250, 250, 0) 100%);
+  }
+
+  header h6 {
+    font-size: var(--font-size-md);
+  }
+
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--gap-md);
+    z-index: 10;
+    background: rgba(250, 250, 250, 0.1);
+    background: linear-gradient(0deg, rgba(250, 250, 250, 1) 0%, rgba(250, 250, 250, 1) 30%, rgba(250, 250, 250, 0) 100%);
+  }
+
+  .project-modal footer {
+    position: relative;
+    background: none;
+  }
+
+  .body {
+    flex-direction: column;
+  }
+
+  .body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1200px;
+    /* Gabriel Beaugonin 특유의 부드러운 3D 원근감 */
+    touch-action: none;
+    /* 기본 터치 스크롤 방지 */
+    user-select: none;
+    cursor: grab;
+  }
+
+  .body:active {
+    cursor: grabbing;
+  }
+
+  .slider-stage {
+    position: relative;
+    width: 300px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-style: preserve-3d;
+    top: 50%;
+    transform: translateY(-45%);
+  }
+
+  .project {
+    position: absolute;
+    will-change: transform, opacity, filter;
+    backface-visibility: hidden;
+  }
+
+  .mobile-toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 12px 20px;
+    background-color: rgba(25, 25, 25, 0.4);
+    color: var(--bg-light);
+    border-radius: 50px;
+    backdrop-filter: blur(16px);
+
+    /* 트랜지션 애니메이션 */
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+    z-index: 10000;
+    /* 맨 위 표시 */
+    white-space: nowrap;
+  }
+
+  /* 토스트 활성화 애니메이션 */
+  .mobile-toast.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 }

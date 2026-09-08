@@ -235,3 +235,186 @@ function copyEmail() {
     console.error("복사 실패:", err);
   });
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const body = document.querySelector('.body');
+  if (!body) return;
+
+  const originalHTML = body.innerHTML;
+  let isMobileInitialized = false;
+  let cleanupFunc = null;
+
+  // ✨ 화면 중앙에 토스트 메시지 띄우는 함수
+  function showMobileToast(message = "모바일 버전 준비 중입니다.") {
+    // 이미 떠 있는 토스트가 있다면 제거
+    const existingToast = document.querySelector('.mobile-toast');
+    if (existingToast) existingToast.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'mobile-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // 부드럽게 등장
+    requestAnimationFrame(() => {
+      toast.classList.add('show');
+    });
+
+    // 2.5초 후 퇴장 애니메이션 실행 뒤 삭제
+    setTimeout(() => {
+      toast.classList.remove('show');
+      toast.addEventListener('transitionend', () => toast.remove());
+    }, 2500);
+  }
+
+  function initGabrielSlider() {
+    const isMobile = window.innerWidth < 1024;
+
+    if (!isMobile) {
+      if (isMobileInitialized) {
+        if (cleanupFunc) cleanupFunc();
+        body.innerHTML = originalHTML;
+        isMobileInitialized = false;
+      }
+      return;
+    }
+
+    if (isMobileInitialized) return;
+    isMobileInitialized = true;
+
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = originalHTML;
+    const originals = Array.from(tempDiv.querySelectorAll('.project'));
+    if (originals.length === 0) return;
+
+    body.innerHTML = '<div class="slider-stage"></div>';
+    const stage = body.querySelector('.slider-stage');
+
+    const totalCount = 6;
+    for (let i = 0; i < totalCount; i++) {
+      const clone = originals[i % originals.length].cloneNode(true);
+      stage.appendChild(clone);
+    }
+
+    const items = Array.from(stage.querySelectorAll('.project'));
+
+    let currentY = 0;
+    let targetY = 0;
+    let velocity = 0;
+    let startY = 0;
+    let lastY = 0;
+    let isDragging = false;
+    let isClick = true;
+
+    const DRAG_SENSITIVITY = 0.3;
+    const ITEM_SPACING = 210;
+    const LOOP_HEIGHT = originals.length * ITEM_SPACING;
+
+    function animate() {
+      if (!isDragging) {
+        targetY += velocity;
+        velocity *= 0.92;
+
+        if (Math.abs(velocity) < 0.5) {
+          const remainder = targetY % ITEM_SPACING;
+          if (Math.abs(remainder) > 0.1) {
+            targetY -= remainder * 0.1;
+          }
+        }
+      }
+
+      currentY += (targetY - currentY) * 0.1;
+
+      items.forEach((item, index) => {
+        let offset = (index * ITEM_SPACING + currentY) % LOOP_HEIGHT;
+        if (offset < -LOOP_HEIGHT / 2) offset += LOOP_HEIGHT;
+        if (offset > LOOP_HEIGHT / 2) offset -= LOOP_HEIGHT;
+
+        const progress = offset / ITEM_SPACING;
+
+        const rotateX = progress * -32;
+        const translateY = offset;
+        const translateZ = -Math.pow(Math.abs(progress), 1.5) * 120;
+        const scale = Math.max(0.6, 1 - Math.abs(progress) * 0.22);
+        const opacity = Math.max(0.15, 1 - Math.abs(progress) * 0.45);
+        const blur = Math.min(8, Math.abs(progress) * 5);
+
+        item.style.transform = `translateY(${translateY}px) translateZ(${translateZ}px) rotateX(${rotateX}deg) scale(${scale})`;
+        item.style.opacity = opacity;
+        item.style.filter = `blur(${blur}px)`;
+        item.style.zIndex = Math.round(100 - Math.abs(progress) * 10);
+
+        if (Math.abs(progress) < 0.35) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    const animId = requestAnimationFrame(animate);
+
+    function onStart(e) {
+      isDragging = true;
+      isClick = true;
+      velocity = 0;
+      const pageY = e.touches ? e.touches[0].pageY : e.pageY;
+      startY = pageY;
+      lastY = pageY;
+    }
+
+    function onMove(e) {
+      if (!isDragging) return;
+      const pageY = e.touches ? e.touches[0].pageY : e.pageY;
+      const deltaY = (pageY - lastY) * DRAG_SENSITIVITY;
+
+      if (Math.abs(pageY - startY) > 5) {
+        isClick = false;
+      }
+
+      targetY += deltaY;
+      velocity = deltaY * 1.5;
+      lastY = pageY;
+    }
+
+    function onEnd() {
+      isDragging = false;
+    }
+
+    // ✨ 1023px 이하 터치/클릭 시 토스트 메시지 띄우기
+    function onClick(e) {
+      if (!isClick) return;
+
+      const projectCard = e.target.closest('.project');
+      if (projectCard) {
+        showMobileToast("모바일 버전 준비 중입니다.");
+      }
+    }
+
+    body.addEventListener('mousedown', onStart);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onEnd);
+
+    body.addEventListener('touchstart', onStart, { passive: true });
+    window.addEventListener('touchmove', onMove, { passive: true });
+    window.addEventListener('touchend', onEnd);
+    body.addEventListener('click', onClick);
+
+    cleanupFunc = () => {
+      cancelAnimationFrame(animId);
+      body.removeEventListener('mousedown', onStart);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onEnd);
+      body.removeEventListener('touchstart', onStart);
+      window.removeEventListener('touchmove', onMove);
+      body.removeEventListener('touchend', onEnd);
+      body.removeEventListener('click', onClick);
+    };
+  }
+
+  initGabrielSlider();
+  window.addEventListener('resize', initGabrielSlider);
+});
