@@ -307,7 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let isDragging = false;
     let isClick = true;
 
-    const DRAG_SENSITIVITY = 0.3;
+    const DRAG_SENSITIVITY = 0.8;
     const ITEM_SPACING = 210;
     const LOOP_HEIGHT = originals.length * ITEM_SPACING;
 
