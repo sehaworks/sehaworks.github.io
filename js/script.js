@@ -4,7 +4,7 @@
 const projectData = {
   dashboard: {
     title: "스마트 사옥 통합 관리 시스템",
-    description: "출입·방문·주차·근태·식수 등 사옥 운영 전반의 기능을 하나의 플랫폼에서 통합 관리하는 웹 기반 스마트 사옥 관리 시스템입니다. 전체 시스템의 웹 퍼블리싱을 담당했으며, 메인 대시보드를 중심으로 주요 화면의 UI를 구현하고 공통 레이아웃 및 UI 요소를 구성하여 이후 화면 개발에 활용할 수 있는 퍼블리싱 기반을 구축했습니다.",
+    description: "출입·방문·주차·근태·식수 등 사옥 운영 전반의 기능을 하나의 플랫폼에서 통합 관리하는 웹 기반 스마트 사옥 관리 시스템입니다.<br />전체 시스템의 웹 퍼블리싱을 담당했으며, 메인 대시보드를 중심으로 주요 화면의 UI를 구현하고 공통 레이아웃 및 UI 요소를 구성하여<br />이후 화면 개발에 활용할 수 있는 퍼블리싱 기반을 구축했습니다.",
     notice: "※ 본 프로젝트는 보안상의 이유로 실제 서비스 정보 및 데이터를 공개하지 않습니다. 이미지 및 Demo는 실제 프로젝트의 UI 구조와 퍼블리싱 작업을 기반으로 일부 내용을 재구성한 화면입니다.",
     role: "Web Publishing ······ 100%",
     duties: [
@@ -20,7 +20,7 @@ const projectData = {
 
   kiosk: {
     title: "배리어프리 키오스크",
-    description: "키오스크는 사용자의 신체적 특성이나 이용 환경에 따라 화면을 인지하고 조작하는 데 어려움이 발생할 수 있습니다. 이에 기존 키오스크 화면을 기반으로 고대비 모드와 저화면 환경에 대응하는 UI를 구현하여 다양한 사용 환경에서도 주요 정보를 명확하게 인지하고 조작할 수 있도록 구성했습니다.",
+    description: "키오스크는 사용자의 신체적 특성이나 이용 환경에 따라 화면을 인지하고 조작하는 데 어려움이 발생할 수 있습니다.<br />이에 기존 키오스크 화면을 기반으로 고대비 모드와 저화면 환경에 대응하는 UI를 구현하여 다양한 사용 환경에서도 주요 정보를 명확하게 인지하고 조작할 수 있도록 구성했습니다.",
     role: "Web Publishing ······ 100%",
     duties: [
       "키오스크 UI 퍼블리싱",
@@ -33,7 +33,7 @@ const projectData = {
 
   pos: {
     title: "POS",
-    description: "입장권 판매 및 이용객 관리를 위한 POS 화면을 설계하고 퍼블리싱했습니다. 현장 운영자의 업무 흐름을 고려해 주요 기능을 직관적으로 확인하고 빠르게 처리할 수 있도록 구성했습니다.",
+    description: "입장권 판매 및 이용객 관리를 위한 POS 화면을 설계하고 퍼블리싱했습니다.<br />현장 운영자의 업무 흐름을 고려해 주요 기능을 직관적으로 확인하고 빠르게 처리할 수 있도록 구성했습니다.",
     role: ["UI/UX Design ······ 100%", "Web Publishing ······ 100%"],
     duties: [],
     environment: "Pos",
@@ -76,11 +76,20 @@ projects.forEach((project) => {
 
     // 프로젝트 이름 & 설명
     modalTitle.textContent = data.title;
-    modalDescription.textContent = data.description;
+    // 배열인 경우 대응
+    if (Array.isArray(data.description)) {
+      modalDescription.innerHTML = data.description.join("<br>");
+    } else {
+      modalDescription.innerHTML = data.description;
+    }
 
     // 프로젝트 안내문
     if (data.notice) {
-      modalNotice.textContent = data.notice;
+      if (Array.isArray(data.notice)) {
+        modalNotice.innerHTML = data.notice.join("<br>");
+      } else {
+        modalNotice.textContent = data.notice;
+      }
       modalNotice.style.display = "block";
     } else {
       modalNotice.style.display = "none";
@@ -88,7 +97,7 @@ projects.forEach((project) => {
 
     // 담당 업무 (배열 또는 문자열 대응)
     if (Array.isArray(data.role)) {
-      modalRole.textContent = data.role.join(" / ");
+      modalRole.textContent = data.role.join("<br />");
     } else {
       modalRole.textContent = data.role;
     }
