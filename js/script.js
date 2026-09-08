@@ -3,7 +3,7 @@ const projectData = {
 
   dashboard: {
     title: "스마트 사옥 통합 관리 시스템",
-    description: "출입·방문·주차·근태·식수 등 사옥 운영 전반의 기능을 하나의 플랫폼에서 통합 관리하는 웹 기반 스마트 사옥 관리 시스템입니다. 전체 시스템의 웹 퍼블리싱을 담당했으며, 메인 대시보드를 중심으로 주요 화면의 UI를 구현하고 공통 레이아웃 및 UI 요소를 구성하여 이후 화면 개발에 활용할 수 있는 퍼블리싱 기반을 구축했습니다.",
+    description: "출입·방문·주차·근태·식수 등 사옥 운영 전반의 기능을 하나의 플랫폼에서 통합 관리하는 웹 기반 스마트 사옥 관리 시스템입니다.\n전체 시스템의 웹 퍼블리싱을 담당했으며, 메인 대시보드를 중심으로 주요 화면의 UI를 구현하고 공통 레이아웃 및 UI 요소를 구성하여 이후 화면 개발에 활용할 수 있는 퍼블리싱 기반을 구축했습니다.",
     notice: "※ 본 프로젝트는 보안상의 이유로 실제 서비스 정보 및 데이터를 공개하지 않습니다.\n이미지 및 Demo는 실제 프로젝트의 UI 구조와 퍼블리싱 작업을 기반으로 일부 내용을 재구성한 화면입니다.",
     role: "Web Publishing ······ 100%",
     duties: [
@@ -30,19 +30,20 @@ const projectData = {
 
 
   kiosk: {
-    title: "Kiosk",
-    description: "대시보드 프로젝트 상세 내용입니다.",
-    role: "UI/UX Design · Publishing",
+    title: "배리어프리 키오스크",
+    description: "키오스크는 사용자의 신체적 특성이나 이용 환경에 따라 화면을 인지하고 조작하는 데 어려움이 발생할 수 있습니다.\n 이에 기존 키오스크 화면을 기반으로 고대비 모드와 저화면 환경에 대응하는 UI를 구현하여 다양한 사용 환경에서도 주요 정보를 명확하게 인지하고 조작할 수 있도록 구성했습니다.",
+    role: "Web Publishing ······ 100%",
     duties: [
-      "키오스크 UI/UX 디자인",
-      "화면 퍼블리싱",
-      "인터랙션 구현"
+      "키오스크 UI 퍼블리싱",
+      "접근성 대응 UI 구현"
     ],
     environment: "Kiosk",
     stack: [
       "HTML5",
       "CSS3",
-      "JavaScript"
+      "JavaScript",
+      "React",
+      "Vite"
     ],
     tools: [
       "Figma",
@@ -54,19 +55,20 @@ const projectData = {
 
   pos: {
     title: "POS",
-    description: "대시보드 프로젝트 상세 내용입니다.",
-    role: "UI/UX Design · Publishing",
+    description: "입장권 판매 및 이용객 관리를 위한 POS 화면을 설계하고 퍼블리싱했습니다.\n현장 운영자의 업무 흐름을 고려해 주요 기능을 직관적으로 확인하고 빠르게 처리할 수 있도록 구성했습니다.",
+    role: "UI/UX Design ······ 100%\nWeb Publishing ······ 100%",
     duties: [
       "POS UI/UX 디자인",
       "주요 화면 퍼블리싱",
       "UI 컴포넌트 구현"
     ],
-    environment: "PC Web",
+    environment: "Pos",
     stack: [
       "HTML5",
       "CSS3",
       "JavaScript",
-      "React"
+      "React",
+      "Vite"
     ],
     tools: [
       "Figma",
@@ -96,14 +98,23 @@ const modalTools = document.querySelector("#modalTools");
 const projectDemos = document.querySelectorAll(".project-demo");
 
 
+// ---------------------------------------------
+// 모달 UI 숨김 및 상태 복원 함수 (공통 처리)
+// ---------------------------------------------
+function hideModalUI() {
+  modal.classList.remove("active");
+  // (선택 사항) 모달이 닫힐 때 iframe 영상/음성 재색을 멈추고 싶다면 아래 주석을 해제하세요.
+  /*
+  projectDemos.forEach((projectDemo) => {
+    projectDemo.classList.remove("active");
+  });
+  */
+}
+
 /* 프로젝트 클릭 */
-
 projects.forEach((project) => {
-
   project.addEventListener("click", () => {
-
     const projectName = project.dataset.project;
-
     const data = projectData[projectName];
 
     // 프로젝트 이름
@@ -123,15 +134,10 @@ projects.forEach((project) => {
 
     // 담당 업무 상세 목록
     modalDuties.innerHTML = "";
-
     data.duties.forEach((duty) => {
-
       const li = document.createElement("li");
-
       li.textContent = duty;
-
       modalDuties.appendChild(li);
-
     });
 
     // 운영 환경
@@ -144,11 +150,7 @@ projects.forEach((project) => {
     modalTools.textContent = data.tools.join(" · ");
 
     // 기존 배경 클래스 제거
-    demoBox.classList.remove(
-      "bg-dashboard",
-      "bg-kiosk",
-      "bg-pos"
-    );
+    demoBox.classList.remove("bg-dashboard", "bg-kiosk", "bg-pos");
 
     // 클릭한 프로젝트에 맞는 배경 추가
     demoBox.classList.add(`bg-${projectName}`);
@@ -163,28 +165,43 @@ projects.forEach((project) => {
     });
 
     // 클릭한 프로젝트의 projectDemo 찾기
-    const targetDemo = document.querySelector(
-      `.${projectName}-demo`
-    );
+    const targetDemo = document.querySelector(`.${projectName}-demo`);
 
     // 해당 iframe만 보여주기
-    targetDemo.classList.add("active");
+    if (targetDemo) {
+      targetDemo.classList.add("active");
+    }
 
     // --------------------
-    // 모달 열기
+    // 모달 열기 & 히스토리 추가
     // --------------------
-
     modal.classList.add("active");
 
+    // 이미 #modal 해시가 없는 경우에만 브라우저 히스토리에 #modal 상태 추가
+    if (location.hash !== "#modal") {
+      history.pushState({ modalOpen: true }, "", "#modal");
+    }
   });
-
 });
 
-/* X 버튼 */
-
+/* X 버튼 클릭 */
 modalClose.addEventListener("click", () => {
-  modal.classList.remove("active");
+  // 모달이 열려있는 상태에서 X버튼을 누르면 뒤로가기를 실행하여 popstate가 모달을 닫도록 유도
+  if (location.hash === "#modal") {
+    history.back();
+  } else {
+    hideModalUI();
+  }
 });
+
+/* 브라우저 뒤로가기 / 마우스 뒤로가기 / 제스처 감지 */
+window.addEventListener("popstate", () => {
+  // 주소창의 #modal 해시가 사라졌다면 모달 UI 숨김
+  if (location.hash !== "#modal") {
+    hideModalUI();
+  }
+});
+
 
 // 기기 종류별 원본 렌더링 해상도 설정 (데모 실행용 원본 px)
 const DEVICE_CONFIG = {
