@@ -496,6 +496,7 @@ button:hover img {
     right: 0;
     width: 100%;
     z-index: 10;
+    padding-top: var(--gap-xl);
     padding-bottom: var(--gap-xl);
     background: rgba(250, 250, 250, 0.1);
     background: linear-gradient(180deg, rgba(250, 250, 250, 1) 0%, rgba(250, 250, 250, 1) 70%, rgba(250, 250, 250, 0) 100%);
@@ -554,7 +555,7 @@ button:hover img {
     align-items: center;
     transform-style: preserve-3d;
     top: 50%;
-    transform: translateY(-45%);
+    transform: translateY(-50%);
   }
 
   .project {
