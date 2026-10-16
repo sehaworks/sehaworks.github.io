@@ -53,7 +53,7 @@
 
     // 첫 화면 요소(타이틀/버튼/푸터) 페이드아웃
     const h = 1 - seg(p, 0, .035);
-    hero.style.opacity = h; cta.style.opacity = h; foot.style.opacity = h;
+    hero.style.opacity = h; cta.style.opacity = h;
     const on = h > .5;
     cta.style.pointerEvents = on ? 'auto' : 'none';
     foot.style.pointerEvents = on ? 'auto' : 'none';
@@ -84,6 +84,18 @@
     return { s, x: (vw - FW * s) / 2, y: oy };
   }
 
+  /* iOS Safari는 <video>를 바로 그릴 때 'lighten' 합성이 무시되어 검정 배경이 그대로 보임.
+   → 영상을 먼저 버퍼 캔버스에 그리고, 거기서 검정을 배경색으로 바꾼 뒤 메인 캔버스에 복사 */
+  const vbuf = document.createElement('canvas'), vctx = vbuf.getContext('2d');
+  function drawVideoToBuffer() {
+    const w = Math.round(vid.videoWidth * VID_CROP), h = vid.videoHeight;
+    if (vbuf.width !== w || vbuf.height !== h) { vbuf.width = w; vbuf.height = h; }
+    vctx.globalCompositeOperation = 'source-over';
+    vctx.drawImage(vid, 0, 0, w, h, 0, 0, w, h);
+    vctx.globalCompositeOperation = 'lighten';   // 캔버스끼리의 합성은 iOS에서도 정상 동작
+    vctx.fillStyle = BG; vctx.fillRect(0, 0, w, h);
+  }
+
   function draw() {
     if (!ready) return;
     const g = cam(cur / (N - 1));
@@ -93,8 +105,10 @@
     // 첫 화면: 무한 반복 영상
     const showVid = vidOK && vk < 1 && vid.readyState >= 2;
     if (showVid) {
-      const vw0 = vid.videoWidth, vh0 = vid.videoHeight;
-      ctx.drawImage(vid, 0, 0, vw0 * VID_CROP, vh0, g.x, g.y, FW * VID_CROP * g.s, FH * g.s);
+      drawVideoToBuffer();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.drawImage(vbuf, g.x, g.y, FW * VID_CROP * g.s, FH * g.s);
+      ctx.globalCompositeOperation = 'lighten';
     }
     // 스크롤 프레임 (영상이 보이는 동안에는 vk 만큼만 섞어서 자연스럽게 교체)
     const a = showVid ? vk : 1;
@@ -124,7 +138,7 @@
       setTimeout(done, 4000);                       // 영상이 늦어도 로딩 화면이 멈추지 않게
       const start = () => { if (vid.paused && vk < 1) vid.play().catch(() => { }); };
       vid.play().catch(() => { });
-      ['pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach(ev => addEventListener(ev, start, { once: true, passive: true }));
+      ['pointerdown', 'keydown', 'wheel', 'touchstart', 'touchend', 'click', 'scroll'].forEach(ev => addEventListener(ev, start, { once: true, passive: true }));
       vid.addEventListener('error', () => { vidOK = false; resolve(); });
     });
   }
@@ -158,7 +172,7 @@
       im.src = src;
     })));
     await setupVideo();
-    vidOK = !!vid && vid.readyState >= 2;
+    vidOK = !!vid && !vid.error;
     FW = imgs[0].naturalWidth || FW; FH = imgs[0].naturalHeight || FH;
     ready = true; cur = target; resize();
     loader.classList.add('done'); loop();
