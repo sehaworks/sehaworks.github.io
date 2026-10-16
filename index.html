@@ -8,40 +8,87 @@
   <!-- CSS -->
   <link rel="stylesheet" href="./css/reset.css">
   <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/intro.css">
   <!-- JavaScript -->
   <script src="./js/script.js" defer></script>
+  <script src="./js/intro.js" defer></script>
 </head>
 
 <body>
-  <!-- main home -->
-  <div class="container">
-    <header>
-      <img src="./src/seha.svg" alt="KimSeha">
-      <h6>UI/UX Designer · Web Publisher</h6>
-    </header>
-    <section class="body">
-      <div class="project dashboard" data-project="dashboard"><img src="./src/dashboard-icon.png" alt="dashboard">
-      </div>
-      <div class="project kiosk" data-project="kiosk"><img src="./src/kiosk-icon.png" alt="kiosk"></div>
-      <div class="project pos" data-project="pos"><img src="./src/pos-icon.png" alt="pos"></div>
-    </section>
-    <footer>
-      <div class="copyright">
-        <p><b>© 2026. KIM SEHA</b></p>
-        <p>All pictures cannot be copied without permission.</p>
-      </div>
-      <div class="contact-button-box">
-        <button class="user-info" type="button"><a href="https://sehakim.notion.site/d66a9bc391a74955882cf5a59c22f849"
-            target="_blank"><img src="./src/user.svg" alt="info"></a></button>
-        <div class="email-btn-wrapper">
-          <button class="user-mail" type="button" onclick="copyEmail()">
-            <img src="./src/envelope.svg" alt="mail">
-          </button>
-          <!-- 말풍선 툴팁 -->
-          <div class="toast-tooltip" id="toastTooltip">메일 주소 복사하기</div>
+  <!-- loader -->
+  <div id="loader">
+    <div>LOADING<b><i id="bar"></i></b></div>
+  </div>
+
+  <!-- intro : 스크롤 연동 영상 -->
+  <section id="intro">
+    <div id="sticky">
+      <canvas id="cv"></canvas>
+      <!-- 첫 화면에서 자동 재생 + 무한 반복 (캔버스에 그려서 사용하므로 화면에는 보이지 않음) -->
+      <video id="introVideo" class="intro-video" muted loop autoplay playsinline preload="auto">
+        <source src="./src/video/intro.mp4" type="video/mp4">
+        <source src="./src/video/intro.webm" type="video/webm">
+      </video>
+
+      <header id="hero">
+        <img src="./src/seha.svg" alt="KimSeha" class="fade-up delay-1">
+        <h6 class="fade-up delay-2">Web Publisher · UI/UX Designer</h6>
+      </header>
+
+      <button id="cta" type="button">Scroll to the Works</button>
+
+      <div id="foot" class="fade-up-footer delay-5">
+        <div class="copy">
+          <b>© 2026. KIM SEHA</b>
+          <span>All pictures cannot be copied without permission.</span>
+        </div>
+        <div class="contact-button-box">
+          <button class="user-info" type="button"><a href="https://sehakim.notion.site/d66a9bc391a74955882cf5a59c22f849"
+              target="_blank"><img src="./src/user.svg" alt="info"></a></button>
+          <div class="email-btn-wrapper">
+            <button class="user-mail" type="button" onclick="copyEmail(this)">
+              <img src="./src/envelope.svg" alt="mail">
+            </button>
+            <div class="toast-tooltip">메일 주소 복사하기</div>
+          </div>
         </div>
       </div>
-    </footer>
+
+      <div id="white"></div>
+    </div>
+  </section>
+
+  <!-- main home : 스크롤 후 나타나는 프로젝트 화면 -->
+  <div id="home" tabindex="-1">
+    <div class="container">
+      <header>
+        <img src="./src/seha.svg" alt="KimSeha">
+        <h6>Web Publisher · UI/UX Designer</h6>
+      </header>
+      <section class="body">
+        <div class="project dashboard" data-project="dashboard"><img src="./src/dashboard-icon.png" alt="dashboard">
+        </div>
+        <div class="project kiosk" data-project="kiosk"><img src="./src/kiosk-icon.png" alt="kiosk"></div>
+        <div class="project pos" data-project="pos"><img src="./src/pos-icon.png" alt="pos"></div>
+      </section>
+      <footer>
+        <div class="copyright">
+          <p><b>© 2026. KIM SEHA</b></p>
+          <p>All pictures cannot be copied without permission.</p>
+        </div>
+        <div class="contact-button-box">
+          <button class="user-info" type="button"><a href="https://sehakim.notion.site/d66a9bc391a74955882cf5a59c22f849"
+              target="_blank"><img src="./src/user.svg" alt="info"></a></button>
+          <div class="email-btn-wrapper">
+            <button class="user-mail" type="button" onclick="copyEmail(this)">
+              <img src="./src/envelope.svg" alt="mail">
+            </button>
+            <!-- 말풍선 툴팁 -->
+            <div class="toast-tooltip">메일 주소 복사하기</div>
+          </div>
+        </div>
+      </footer>
+    </div>
   </div>
 
   <!-- project modal -->
@@ -111,11 +158,11 @@
         <button class="user-info" type="button"><a href="https://sehakim.notion.site/d66a9bc391a74955882cf5a59c22f849"
             target="_blank"><img src="./src/user.svg" alt="info"></a></button>
         <div class="email-btn-wrapper">
-          <button class="user-mail" type="button" onclick="copyEmail()">
+          <button class="user-mail" type="button" onclick="copyEmail(this)">
             <img src="./src/envelope.svg" alt="mail">
           </button>
           <!-- 말풍선 툴팁 -->
-          <div class="toast-tooltip" id="toastTooltip">메일 주소 복사하기!</div>
+          <div class="toast-tooltip">메일 주소 복사하기</div>
         </div>
       </div>
     </footer>

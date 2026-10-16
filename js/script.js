@@ -214,9 +214,11 @@ window.addEventListener('DOMContentLoaded', () => {
 let toastTimer = null;
 let resetTextTimer = null;
 
-function copyEmail() {
+function copyEmail(btn) {
   const email = "aseh0210@gmail.com";
-  const tooltip = document.getElementById("toastTooltip");
+  // 클릭한 버튼 옆의 툴팁을 사용 (인트로/메인/모달에 각각 존재)
+  const tooltip = btn.parentElement.querySelector(".toast-tooltip");
+  if (!tooltip) return;
 
   navigator.clipboard.writeText(email).then(() => {
     if (toastTimer) clearTimeout(toastTimer);
@@ -418,3 +420,4 @@ document.addEventListener("DOMContentLoaded", () => {
   initGabrielSlider();
   window.addEventListener('resize', initGabrielSlider);
 });
+
