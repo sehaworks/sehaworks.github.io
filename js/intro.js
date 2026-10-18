@@ -70,7 +70,10 @@
     else if (u < .005) home.classList.remove('show');
 
     const act = p >= T_ACTIVE;
-    if (act !== home._act) { home._act = act; home.style.pointerEvents = act ? 'auto' : 'none'; }
+    if (act !== home._act) {
+      home._act = act; home.style.pointerEvents = act ? 'auto' : 'none';
+      document.documentElement.classList.toggle('desktop-locked', act);     // 메인(데스크톱) 화면에서는 페이지 스크롤 잠금
+    }
   }
 
   function cam(f) {
@@ -179,6 +182,36 @@
     ready = true; cur = target; resize();
     loader.classList.add('done'); loop();
   }
+
+  // iOS Safari 등 overflow:hidden만으로 막히지 않는 터치 스크롤 차단 (창 안 스크롤은 허용)
+  addEventListener('touchmove', e => {
+    if (!document.documentElement.classList.contains('desktop-locked')) return;
+    if (e.target.closest && e.target.closest('.win-body')) return;
+    e.preventDefault();
+  }, { passive: false });
+
+  // 휠 / 키보드로 인한 배경 스크롤 차단 (창 안 .win-body 안에서는 허용)
+  const locked = () => document.documentElement.classList.contains('desktop-locked');
+  addEventListener('wheel', e => {
+    if (!locked()) return;
+    const body = e.target.closest && e.target.closest('.win-body');
+    if (body) {
+      // 창 안에서 스크롤할 내용이 없거나 끝에 닿았으면 배경으로 새지 않게 막음
+      const up = e.deltaY < 0;
+      const atTop = body.scrollTop <= 0, atBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 1;
+      if ((up && atTop) || (!up && atBottom)) e.preventDefault();
+      return;
+    }
+    e.preventDefault();
+  }, { passive: false });
+
+  addEventListener('keydown', e => {
+    if (!locked()) return;
+    if (!['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(e.key)) return;
+    const t = e.target;
+    if (t.closest && t.closest('.win-body, input, textarea, select, [contenteditable]')) return;
+    e.preventDefault();
+  });
 
   addEventListener('scroll', readScroll, { passive: true });
   addEventListener('resize', resize);

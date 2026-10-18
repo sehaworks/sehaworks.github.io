@@ -8,7 +8,7 @@
 (() => {
   const home = document.getElementById('home');
   const layer = document.getElementById('winLayer');
-  const exitBtn = document.getElementById('exitBtn');
+  const exitBtns = document.querySelectorAll('#exitBtn, [data-app="exit"]');   // 헤더 Exit + 앱 아이콘 종료
   if (!home || !layer) return;
 
   const WIN_TITLE = 'Seha Works';           // 모든 창 제목줄에 표시되는 이름
@@ -240,11 +240,11 @@
     syncLayer();
   });
 
-  if (exitBtn) exitBtn.addEventListener('click', () => {
+  exitBtns.forEach(btn => btn.addEventListener('click', () => {
     closeAll();
     if (typeof window.exitToIntro === 'function') window.exitToIntro();
     else scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  }));
 })();
 
 // 시간
@@ -277,20 +277,24 @@ updateDateTime();
 // 1초마다 업데이트
 setInterval(updateDateTime, 1 * 1000);
 
-// 메일 복사
-const mailCopy = document.querySelector(".mail-copy");
-const toastTooltip = mailCopy.querySelector(".header-toast-tooltip");
-
-mailCopy.addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText("aseh0210@gmail.com");
-
-    toastTooltip.textContent = "복사완료!";
-
-    setTimeout(() => {
-      toastTooltip.textContent = "메일 주소 복사하기";
-    }, 1500);
-  } catch (error) {
-    console.error("메일 주소 복사 실패:", error);
-  }
+// 메일 복사 (헤더의 .mail-copy 와 앱 아이콘 [data-app="mail"] 공용)
+const EMAIL = "aseh0210@gmail.com";
+document.querySelectorAll('.mail-copy, [data-app="mail"]').forEach(btn => {
+  const tip = btn.querySelector('.header-toast-tooltip');   // 헤더용 툴팁 (있을 때만)
+  const orig = btn.dataset.label;                           // 앱 아이콘 말풍선 원래 글자
+  let timer;
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      clearTimeout(timer);
+      if (tip) tip.textContent = '복사완료!';
+      if (orig) { btn.dataset.label = '복사 완료!'; btn.classList.add('copied'); }
+      timer = setTimeout(() => {
+        if (tip) tip.textContent = '메일 주소 복사하기';
+        if (orig) { btn.dataset.label = orig; btn.classList.remove('copied'); }
+      }, 1500);
+    } catch (error) {
+      console.error('메일 주소 복사 실패:', error);
+    }
+  });
 });

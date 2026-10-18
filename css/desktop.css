@@ -595,3 +595,117 @@
     padding: 32px 16px 0;
   }
 }
+
+/* ───── 앱 아이콘 독 (Resume · Mail · Exit) ───── */
+
+
+.app-icon,
+.app-icon:hover {
+  /* style.css의 공통 button / a 스타일 덮어쓰기 */
+  position: relative;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(160deg, var(--a1), var(--a2));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 6px 14px rgba(0, 30, 90, .2);
+  transition: transform .18s cubic-bezier(.2, .8, .2, 1);
+}
+
+.app-icon:hover {
+  transform: translateY(-6px) scale(1.12);
+}
+
+.app-icon:active {
+  transform: scale(.94);
+}
+
+.app-icon:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, .9);
+  outline-offset: 3px;
+}
+
+.app-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .25));
+}
+
+.app-icon img {
+  width: 28px;
+  height: 28px;
+  filter: invert();
+}
+
+/* 이름 말풍선 (마우스 올리면 / 메일 복사 시) */
+.app-icon::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(20, 24, 40, .85);
+  color: #fff;
+  font: 600 var(--font-size-xs) var(--font-base);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s, transform .15s;
+}
+
+.app-icon:hover::after,
+.app-icon:focus-visible::after,
+.app-icon.copied::after {
+  opacity: 1;
+  transform: translateX(-50%);
+}
+
+.app-icon.copied::after {
+  background: #10b981;
+}
+
+@media (max-width: 640px) {
+  #appDock {
+    bottom: 16px;
+    gap: 14px;
+    padding: 10px 14px;
+  }
+
+  .app-icon,
+  .app-icon:hover {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+/* ───── 데스크톱(메인 화면)에서는 페이지 스크롤 잠금 ───── */
+html.desktop-locked,
+html.desktop-locked body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* ───── 창이 화면 밖으로 나가도 배경(#home / 페이지)은 절대 스크롤 안 되게 ───── */
+#home,
+#winLayer {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.win-body {
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
