@@ -143,11 +143,11 @@
     });
   }
 
-  /* "Scroll to the Works" → 부드럽게 끝까지 */
+  /* 부드러운 스크롤 이동: "Scroll to the Works"(끝까지) / 종료 버튼(맨 위 intro로) 공용 */
   let auto = 0;
-  function autoScroll() {
+  function animateScrollTo(to, dur) {
     cancelAnimationFrame(auto);
-    const from = scrollY, to = intro.offsetHeight - innerHeight, dur = 5200, t0 = performance.now();
+    const from = scrollY, t0 = performance.now();
     const stop = () => { cancelAnimationFrame(auto); removeEventListener('wheel', stop); removeEventListener('touchstart', stop); };
     addEventListener('wheel', stop, { passive: true }); addEventListener('touchstart', stop, { passive: true });
     const step = now => {
@@ -157,6 +157,8 @@
     };
     auto = requestAnimationFrame(step);
   }
+  const autoScroll = () => animateScrollTo(intro.offsetHeight - innerHeight, 5200);
+  window.exitToIntro = () => animateScrollTo(0, 3200);   // desktop.js의 "종료" 버튼에서 호출
   cta.addEventListener('click', autoScroll);
 
   /* 프레임 로드 (file:// 로 열어도 동작하도록 <img> 사용) */

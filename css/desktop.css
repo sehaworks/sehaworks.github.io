@@ -1,0 +1,597 @@
+/* =====================================================
+   DESKTOP — 하늘 배경 + 드래그 가능한 상세 설명 창
+   ===================================================== */
+
+/* ───── 배경: CloudSky(WebGL). WebGL이 안 될 때를 위해 같은 색의 그라데이션을 깔아둠 ───── */
+#home {
+  background: linear-gradient(180deg, #0075ff 0%, #b4d2f0 100%);
+}
+
+#sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+#skyCv {
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  transition: opacity .6s;
+}
+
+#skyCv.ready {
+  opacity: 1;
+}
+
+#home>.container {
+  position: relative;
+  z-index: 1;
+}
+
+/* 하늘색 배경 위에서 잘 보이도록 헤더/푸터 색 조정 */
+#home header h6 {
+  color: rgba(255, 255, 255, .92);
+}
+
+/* 로고(seha.svg)가 어두운 색이라 하늘색 위에서 안 보이면 아래 줄의 주석을 풀어 흰색으로 */
+/* #home header > img { filter: brightness(0) invert(1); } */
+#home footer p {
+  color: rgba(255, 255, 255, .85);
+}
+
+#home footer button {
+  background: rgba(255, 255, 255, .55);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+#home footer button:hover {
+  background: var(--text-fst);
+}
+
+@media (max-width: 1023px) {
+
+  /* style.css의 모바일 header/footer 그라데이션(#fafafa)은 하늘 배경과 안 맞아서 제거 */
+  #home header,
+  #home footer {
+    background: none;
+  }
+}
+
+/* ───── 종료 버튼 (우측 상단) ───── */
+#exitBtn {
+  transition: color 0.5s ease;
+}
+
+#exitBtn:hover {
+  color: #e81123;
+  transition: color 0.15s ease;
+  opacity: 1;
+}
+
+/* ───── 창 ───── */
+#winLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+#winLayer.dragging iframe {
+  pointer-events: none;
+}
+
+/* 드래그 중 iframe이 마우스를 가로채지 않게 */
+
+.win {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  min-height: 200px;
+  max-width: 100vw;
+  max-height: 100vh;
+  /* 최소 크기는 desktop.js의 MIN_W / MIN_H 와 같게 */
+  background: var(--bg);
+  color: var(--text-fst);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 30, 80, .18), 0 0 0 1px rgba(255, 255, 255, .45);
+  animation: win-in .28s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.win.active {
+  box-shadow: 0 28px 80px rgba(0, 30, 80, .38), 0 0 0 1px rgba(255, 255, 255, .6);
+}
+
+.win.closing {
+  animation: win-out .2s ease-in both;
+  pointer-events: none;
+}
+
+@keyframes win-in {
+  from {
+    opacity: 0;
+    transform: scale(.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes win-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(.94);
+  }
+}
+
+.win-bar {
+  flex: none;
+  height: 44px;
+  padding: 0 0 0 16px;
+  /* 오른쪽 끝에 닫기(X) 버튼이 딱 붙도록 오른쪽 여백 0 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(255, 255, 255, .82);
+  border-bottom: 1px solid var(--border);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.win.is-dragging .win-bar {
+  cursor: grabbing;
+}
+
+.win-title {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-sec);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 닫기(X) 버튼: 윈도우 크롬처럼 오른쪽 끝, hover 시 빨간 배경. style.css의 공통 button 스타일(44px, hover 검정)을 덮어씀 */
+.win .win-bar .win-close,
+.win .win-bar .win-close:hover {
+  flex: none;
+  width: 48px;
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-sec);
+  transition: background .12s, color .12s;
+}
+
+.win .win-bar .win-close:hover {
+  background: #e81123;
+  color: #fff;
+}
+
+.win .win-bar .win-close:active {
+  background: #c50f1f;
+  color: #fff;
+}
+
+.win-close svg {
+  width: 11px;
+  height: 11px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.win-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  /* 창 안 스크롤이 뒤쪽 intro 스크롤로 넘어가지 않게 */
+  background: var(--bg);
+}
+
+/* 기본 내용 = 기존 project-modal 디자인 (템플릿을 비워둘 때). 모달의 padding/배경 구성을 창 안에 맞게 옮김 */
+.win-modal {
+  padding: 48px 32px 0;
+}
+
+.win-modal .modal-content {
+  max-width: 1200px;
+}
+
+.win-modal .project-info {
+  flex-wrap: wrap;
+}
+
+.win-modal .project-info .info-item {
+  min-width: 160px;
+}
+
+.win-modal .project-info ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style: disc;
+  font-size: var(--font-size-sm);
+}
+
+.win-modal .project-demo-box {
+  margin-top: var(--gap-hg);
+  padding-bottom: 80px;
+}
+
+/* .project-demo의 translateY(80px) 만큼 아래 여백 */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .win,
+  .win.closing {
+    animation: none;
+  }
+}
+
+/* ───── 바탕화면 폴더 아이콘 (PC) ───── */
+
+#deskIcons {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+
+.desk-icon {
+  width: 104px;
+  height: auto;
+  padding: 10px 6px 8px;
+  gap: 8px;
+  flex-direction: column;
+  background: transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #fff;
+  font: 600 var(--font-size-sm) var(--font-base);
+  text-shadow: 0 1px 6px rgba(0, 40, 120, .55);
+  transition: background .15s, transform .15s;
+}
+
+.desk-icon:hover {
+  background: rgba(255, 255, 255, .22);
+}
+
+/* style.css의 공통 button:hover(검정)를 덮어씀 */
+.desk-icon.selected,
+.desk-icon:focus-visible {
+  background: rgba(255, 255, 255, .34);
+  outline: 0;
+}
+
+.desk-icon:active {
+  transform: scale(.96);
+}
+
+.desk-icon svg {
+  width: 72px;
+  height: 60px;
+  overflow: visible;
+  filter: drop-shadow(0 8px 10px rgba(0, 40, 120, .35));
+}
+
+.desk-icon img {
+  width: 60px;
+  height: 60px;
+  filter: drop-shadow(0 8px 10px rgba(0, 40, 120, .35));
+}
+
+.desk-icon .f-back {
+  fill: var(--c2);
+}
+
+.desk-icon .f-front {
+  fill: var(--c1);
+}
+
+.desk-icon .f-paper {
+  fill: #fff;
+  opacity: .92;
+}
+
+.desk-icon .f-shine {
+  stroke: #fff;
+  stroke-opacity: .55;
+  stroke-width: 2;
+  stroke-linecap: round;
+  fill: none;
+}
+
+/* ───── 크기 조절 핸들 (가장자리 = 한 방향만, 모서리 = 가로+세로) ───── */
+.win-rs {
+  position: absolute;
+  z-index: 3;
+  touch-action: none;
+}
+
+.win-rs-e,
+.win-rs-w {
+  top: 44px;
+  bottom: 10px;
+  width: 6px;
+  cursor: ew-resize;
+}
+
+/* 제목줄 높이(44px) 아래부터: X 버튼과 안 겹치게 */
+.win-rs-n,
+.win-rs-s {
+  left: 10px;
+  right: 10px;
+  height: 6px;
+  cursor: ns-resize;
+}
+
+.win-rs-n {
+  top: 0;
+  right: 58px;
+  height: 4px;
+}
+
+/* 위쪽은 제목줄/닫기 버튼과 겹치지 않게 얇게 */
+.win-rs-e {
+  right: 0;
+}
+
+.win-rs-w {
+  left: 0;
+}
+
+.win-rs-s {
+  bottom: 0;
+}
+
+.win-rs-nw,
+.win-rs-se,
+.win-rs-sw {
+  width: 14px;
+  height: 14px;
+}
+
+.win-rs-nw {
+  top: 0;
+  left: 0;
+  cursor: nwse-resize;
+}
+
+.win-rs-se {
+  bottom: 0;
+  right: 0;
+  cursor: nwse-resize;
+}
+
+.win-rs-sw {
+  bottom: 0;
+  left: 0;
+  cursor: nesw-resize;
+}
+
+.win.is-resizing {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.skyHeader {
+  position: fixed;
+  background-color: rgba(255, 255, 255, .5);
+  backdrop-filter: blur(64px);
+  width: 100vw;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-box {
+  display: flex;
+  gap: var(--gap-sm);
+}
+
+.skyHeader .logo {
+  height: 20px;
+  filter: brightness(0);
+}
+
+.flex-box span {
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin: auto 4px;
+}
+
+.flex-box>div {
+  font-size: 14px;
+  font-weight: 700;
+  margin: auto 4px;
+  cursor: default;
+}
+
+.skyHeader>.flex-box>span>a {
+  text-decoration: none;
+  color: var(--font-base);
+}
+
+.skyHeader>.flex-box>span {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.skyHeader>.flex-box>span:hover {
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+#currentDate {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#currentTime {
+  font-size: 14px;
+  color: var(--font-base);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+
+.header-toast-tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  transform: translateY(-4px);
+
+  padding: 8px 12px;
+  border-radius: 8px;
+
+  background: rgba(45, 45, 45, 0.9);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+
+  color: rgba(255, 255, 255, 1);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  line-height: 1.4;
+  white-space: nowrap;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.mail-copy:hover .header-toast-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+#mobileFooter {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .skyHeader {
+    display: none;
+  }
+
+  #mobileFooter {
+    display: flex;
+    justify-content: center;
+    gap: var(--gap-lg);
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, .5);
+    backdrop-filter: blur(64px);
+    padding: 16px;
+    width: calc(100vw - 32px);
+    border-radius: 24px;
+  }
+}
+
+
+/* ───── 640px 이하: 휴대폰 홈 화면처럼 왼쪽 위부터 4칸 ───── */
+@media (max-width: 640px) {
+  #deskIcons {
+    left: 0;
+    right: 0;
+    transform: translate(0, 0);
+    top: 64px;
+    padding: 16px 12px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px 4px;
+    align-items: start;
+    justify-items: center;
+  }
+
+  .desk-icon {
+    width: 100%;
+    min-width: 64px;
+    max-width: 88px;
+    padding: 8px 2px 6px;
+    font-size: var(--font-size-xs);
+  }
+
+  .desk-icon svg,
+  .desk-icon img {
+    width: min(100%, 60px);
+    height: auto;
+  }
+}
+
+/* ───── 640px 이하: 창이 전체화면으로 열림 ───── */
+.win.win-full {
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.win.win-full .win-bar {
+  cursor: default;
+}
+
+#winLayer.has-full {
+  z-index: 2000;
+}
+
+/* 전체화면 창은 상단 헤더(Exit 등)보다 위에 */
+.win.win-full .win-rs {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .win-modal {
+    padding: 32px 16px 0;
+  }
+}

@@ -199,7 +199,7 @@ a {
 
 button img {
   width: 24px;
-  filter: invert(12%) sepia(3%) saturate(13%) hue-rotate(321deg) brightness(105%) contrast(97%);
+  /* filter: invert(12%) sepia(3%) saturate(13%) hue-rotate(321deg) brightness(105%) contrast(97%); */
 }
 
 button:hover {
@@ -208,7 +208,7 @@ button:hover {
 }
 
 button:hover img {
-  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(117deg) brightness(106%) contrast(103%);
+  /* filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(117deg) brightness(106%) contrast(103%); */
   transition: ease-in-out 0.1s;
 }
 
@@ -327,7 +327,7 @@ button:hover img {
 }
 
 .project-name h2 {
-  font-size: var(--font-size-4xl);
+  font-size: var(--font-size-2xl);
   font-weight: 700;
 }
 

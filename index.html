@@ -9,9 +9,12 @@
   <link rel="stylesheet" href="./css/reset.css">
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/intro.css">
+  <link rel="stylesheet" href="./css/desktop.css">
   <!-- JavaScript -->
   <script src="./js/script.js" defer></script>
   <script src="./js/intro.js" defer></script>
+  <script src="./js/sky.js" defer></script>
+  <script src="./js/desktop.js" defer></script>
 </head>
 
 <body>
@@ -60,112 +63,69 @@
 
   <!-- main home : 스크롤 후 나타나는 프로젝트 화면 -->
   <div id="home" tabindex="-1">
-    <div class="container">
-      <header>
-        <img src="./src/seha.svg" alt="KimSeha">
-        <h6>Web Publisher · UI/UX Designer</h6>
-      </header>
-      <section class="body">
-        <div class="project dashboard" data-project="dashboard"><img src="./src/dashboard-icon.png" alt="dashboard">
-        </div>
-        <div class="project kiosk" data-project="kiosk"><img src="./src/kiosk-icon.png" alt="kiosk"></div>
-        <div class="project pos" data-project="pos"><img src="./src/pos-icon.png" alt="pos"></div>
-      </section>
-      <footer>
-        <div class="copyright">
-          <p><b>© 2026. KIM SEHA</b></p>
-          <p>All pictures cannot be copied without permission.</p>
-        </div>
-        <div class="contact-button-box">
-          <button class="user-info" type="button"><a href="https://sehakim.notion.site/d66a9bc391a74955882cf5a59c22f849"
-              target="_blank"><img src="./src/user.svg" alt="info"></a></button>
-          <div class="email-btn-wrapper">
-            <button class="user-mail" type="button" onclick="copyEmail(this)">
-              <img src="./src/envelope.svg" alt="mail">
-            </button>
-            <!-- 말풍선 툴팁 -->
-            <div class="toast-tooltip">메일 주소 복사하기</div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  </div>
+    <!-- 배경화면 (CloudSky) -->
+    <div id="sky" aria-hidden="true"><canvas id="skyCv"></canvas></div>
 
-  <!-- project modal -->
-  <div class="project-modal" id="projectModal">
-    <button class="modal-close" id="modalClose" type="button"><img src="./src/x.svg" alt="x"></button>
-    <div class="project-modal-container">
+    <!-- 상세 설명 창이 열리는 곳 -->
+    <div id="winLayer"></div>
 
-      <div class="modal-content">
-        <div class="project-name">
-          <h2 id="modalTitle"></h2>
-          <p id="modalDescription"></p>
-          <div class="project-notice" id="modalNotice"></div>
-        </div>
-        <div class="project-info">
-          <div class="info-item">
-            <span class="info-title">담당 업무</span>
-            <strong id="modalRole"></strong>
-            <ul id="modalDuties"></ul>
-          </div>
-          <div class="info-item">
-            <span class="info-title">운영 환경</span>
-            <strong id="modalEnvironment"></strong>
-          </div>
-          <div class="info-item">
-            <span class="info-title">기술 스택</span>
-            <strong id="modalStack"></strong>
-          </div>
-          <div class="info-item">
-            <span class="info-title">사용 도구</span>
-            <strong id="modalTools"></strong>
-          </div>
-        </div>
+    <!-- 헤더 -->
+    <div class="skyHeader">
+      <div class="flex-box">
+        <img src="./src/color-palette_gray.svg" alt="palette" class="logo">
+        <div>Seha Works</div>
+        <span><a href="https://sehakim.notion.site/d66a9bc391a74955882cf5a59c22f849" target="_blank">Resume</a></span>
+        <span class="mail-copy">
+          <span>Mail</span>
+          <div class="header-toast-tooltip">메일 주소 복사하기</div>
+        </span>
+        <span id="exitBtn">Exit</span>
       </div>
-
-      <div class="project-demo-box">
-        <!-- 1. Dashboard -->
-        <div class="project-demo dashboard-demo active">
-          <div class="iframe-wrapper dashboard-screen">
-            <iframe class="demo-iframe" src="https://sehaworks.github.io/dashboard/" title="Dashboard Demo"></iframe>
-          </div>
-          <img class="device-frame" src="./src/monitor.svg" alt="monitor">
-        </div>
-
-        <!-- 2. Kiosk -->
-        <div class="project-demo kiosk-demo">
-          <div class="iframe-wrapper kiosk-screen">
-            <iframe class="demo-iframe" src="https://sehaworks.github.io/kiosk/" title="Kiosk Demo"></iframe>
-          </div>
-          <img class="device-frame" src="./src/kiosk.svg" alt="kiosk">
-        </div>
-
-        <!-- 3. POS -->
-        <div class="project-demo pos-demo">
-          <div class="iframe-wrapper pos-screen">
-            <iframe class="demo-iframe" src="https://sehaworks.github.io/pos/" title="POS Demo"></iframe>
-          </div>
-          <img class="device-frame" src="./src/pos.svg" alt="pos">
-        </div>
+      <div class="flex-box">
+        <div id="currentDate"></div>
+        <div id="currentTime"></div>
       </div>
     </div>
-    <footer>
-      <div class="copyright">
-        <p><b>© 2026. KIM SEHA</b></p>
-        <p>All pictures cannot be copied without permission.</p>
+    <!-- 종료 → intro로 -->
+    <!-- <button id="exitBtn" type="button" aria-label="종료">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 3v9" />
+        <path d="M6.3 6.8a8 8 0 1 0 11.4 0" />
+      </svg><span>종료</span>
+    </button> -->
+
+    <!-- 바탕화면 폴더 아이콘 (클릭하면 상세 설명 창이 열림). data-project = projectData / <template id="win-...">의 이름 -->
+    <nav id="deskIcons" aria-label="포트폴리오">
+      <button class="desk-icon" type="button" data-project="dashboard" style="--c1:#7cc0ff;--c2:#3b86f0">
+        <img src="./src/dashboard-icon.png" alt="dashboard">
+        <span>Dashboard</span>
+      </button>
+      <button class="desk-icon" type="button" data-project="kiosk" style="--c1:#7be0c4;--c2:#2fb08e">
+        <img src="./src/kiosk-icon.png" alt="kiosk">
+        <span>Kiosk</span>
+      </button>
+      <button class="desk-icon" type="button" data-project="pos" style="--c1:#ffc979;--c2:#f0953a">
+        <img src="./src/pos-icon.png" alt="pos">
+        <span>POS</span>
+      </button>
+    </nav>
+
+    <nav id="mobileFooter">
+      <button class="user-info" type="button"><a href="https://sehakim.notion.site/d66a9bc391a74955882cf5a59c22f849"
+          target="_blank"><img src="./src/user.svg" alt="info"></a></button>
+      <div class="email-btn-wrapper">
+        <button class="user-mail" type="button" onclick="copyEmail(this)">
+          <img src="./src/envelope.svg" alt="mail">
+        </button>
+        <div class="toast-tooltip">메일 주소 복사하기</div>
       </div>
-      <div class="contact-button-box">
-        <button class="user-info" type="button"><a href="https://sehakim.notion.site/d66a9bc391a74955882cf5a59c22f849"
-            target="_blank"><img src="./src/user.svg" alt="info"></a></button>
-        <div class="email-btn-wrapper">
-          <button class="user-mail" type="button" onclick="copyEmail(this)">
-            <img src="./src/envelope.svg" alt="mail">
-          </button>
-          <!-- 말풍선 툴팁 -->
-          <div class="toast-tooltip">메일 주소 복사하기</div>
-        </div>
-      </div>
-    </footer>
+      <button class="footer-icon" type="button" aria-label="종료">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 3v9" />
+          <path d="M6.3 6.8a8 8 0 1 0 11.4 0" />
+        </svg>
+      </button>
+    </nav>
   </div>
 </body>
 
